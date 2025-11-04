@@ -71,3 +71,6 @@ Os grupos deverão rodar o programa em sala e explicar o funcionamento. Todos os
 [ ] - Organização e clareza do código
 [ ] - Funcionamento
 [ ] - Explicação e domínio do conteúdo
+
+
+- Usar o LOC no 'Produto produtos[MAX_PRODUTOS];' para melhorar a locaçao de memoria
