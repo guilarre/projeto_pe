@@ -98,7 +98,34 @@ void buscar_por_codigo(Produto produtos[], int *contador){
     }
 }
 
-
+void ordenar_por_preco(Produto produtos[], int contador) {
+    if (contador == 0) {
+        printf("Nenhum produto cadastrado ainda.\n");
+        return;
+    }
+    
+    // Bubble Sort - ordena do menor para o maior preço
+    for (int i = 0; i < contador - 1; i++) {
+        for (int j = 0; j < contador - i - 1; j++) {
+            if (produtos[j].preco > produtos[j + 1].preco) {
+                // Troca os produtos de posição
+                Produto temp = produtos[j];
+                produtos[j] = produtos[j + 1];
+                produtos[j + 1] = temp;
+            }
+        }
+    }
+    
+    // Imprime os produtos ordenados
+    printf("\n=== Produtos Ordenados por Preço ===\n");
+    for (int i = 0; i < contador; i++) {
+        printf("%d - %s | R$%.2f | Qtd: %d\n",
+               produtos[i].codigo,
+               produtos[i].nome,
+               produtos[i].preco,
+               produtos[i].quantidade);
+    }
+}
 
 int main(){
     setlocale(LC_ALL, "pt_BR.UTF-8"); // Opção pra imprimir em UTF-8

@@ -100,6 +100,7 @@ void buscar_por_codigo(Produto produtos[], int *contador){
 
 
 
+
 int main(){
     setlocale(LC_ALL, "pt_BR.UTF-8"); // Opção pra imprimir em UTF-8
 
