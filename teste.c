@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <string.h>
+#include <locale.h> // Pra forçar UTF-8
+
 #define MAX_PRODUTOS 100
 
-// Struct pra armazenar produtos na memória
 struct produto
 {
     char nome[50];
@@ -22,36 +23,6 @@ Produto cria_produto(char nome[50], int codigo, float preco, int quantidade) {
     produto.preco = preco;
     produto.quantidade = quantidade;
     return produto;
-}
-
-void ler_produtos(Produto produtos[], int *contador) {
-  FILE *fp;
-  fp = fopen("produtos.txt", "r");
-
-  char buf[100];
-  char *delim = " ";
-
-  while (fgets(buf, 100, fp)) {
-    char *codigo = strtok(buf, delim); // Delimita por espaço
-    char *nome = strtok(NULL, delim);
-    char *preco = strtok(NULL, delim);
-    char *quantidade = strtok(NULL, delim);
-
-    // Cast pros tipos corretos
-    *codigo = (int)*codigo;
-    *preco = (float)*preco;
-    *quantidade = (int)*quantidade;
-
-    // Lógica pra salvar no struct produto
-    if (*contador < MAX_PRODUTOS) {
-        produtos[*contador] = cria_produto(nome, *codigo, *preco, *quantidade);
-        *contador += 1;
-    } else {
-        printf("ERRO: Limite máximo de produtos atingido!\n");
-    }
-  }
-
-  fclose(fp);
 }
 
 // Função input_criar_produto
@@ -105,7 +76,7 @@ void buscar_por_codigo(Produto produtos[], int *contador){
     int codigo_produto;
     int encontrado = 0; 
 
-    printf("Qual código do produto? ");
+    printf("Qual codigo do produto? ");
     scanf("%d", &codigo_produto);
     getchar();
 
@@ -126,6 +97,7 @@ void buscar_por_codigo(Produto produtos[], int *contador){
         printf("ERRO: Produto com código %d não encontrado!\n", codigo_produto);
     }
 }
+
 void ordenar_por_preco(Produto produtos[], int *contador) {
     if (contador == 0) {
         printf("Nenhum produto cadastrado ainda.\n");
@@ -155,32 +127,24 @@ void ordenar_por_preco(Produto produtos[], int *contador) {
     }
 }
 
-
-
-
-void printa_menu(int opcao) {
-    char menu_inicial[] = "\n===== MENU =====\n" \
-			"1 - Criar produto\n" \
-			"2 - Listar produtos\n" \
-			"3 - Buscar produto por código\n" \
-			"4 - Ordenar produtos por preço\n\n" \
-			"0 - Sair\n" \
-    switch (opcao) {
-        case 0:
-            printf("%s", menu_inicial);
-    }
-}
-
 int main(){
+    setlocale(LC_ALL, "pt_BR.UTF-8"); // Opção pra imprimir em UTF-8
+
     Produto produtos[MAX_PRODUTOS];
     int contador = 0;
     int opcao;
     int *ponteiro_contador = &contador;
 
-    ler_produtos(produtos, ponteiro_contador);
-
+    //int id_produto;
+    //Produto p1 = cria_produto();
+    //printf("nome: %s", p1.nome);
+    
     while (1) {
-        printa_menu(0);
+        printf("\n===== MENU =====\n");
+        printf("1 - Criar produto\n");
+        printf("2 - Listar produtos\n");
+        printf("3 - Buscar produto por código\n");
+        printf("4 - Ordenar por preço");
         printf("Escolha uma opção: ");
         scanf("%d", &opcao);
         getchar(); // limpar buffer
