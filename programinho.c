@@ -58,6 +58,14 @@ void ler_produtos(Produto produtos[], int *contador) {
   fclose(fp);
 }
 
+// Vamos precisar do limpar_buffer() pra quando tiver
+// fgets/scanf um junto do outro
+void limpar_buffer() {
+    int c;
+    // Consome os caracteres até o fim da linha/arquivo
+    while ((c = getchar()) != '\n' && c != EOF) { }
+}
+
 // Função input_criar_produto
 void menu_criar_produto(Produto produtos[], int *contador, int *contador_codigo){
     char nome[50];
@@ -65,25 +73,37 @@ void menu_criar_produto(Produto produtos[], int *contador, int *contador_codigo)
     float preco;
     int quantidade;
 
-    // TODO: validação da string digitada
     printf("Digite o nome do produto: \n");
-    fgets(nome, sizeof(nome), stdin);
-    nome[strlen(nome) - 1] = '\0';
+    if (fgets(nome, sizeof(nome), stdin) == NULL) {
+        printf("\nERRO: Nome inválido!.\n");
+    }
 
-    // printf("Digite o codigo do produto: \n");
-    // if (scanf("%d", &codigo) != 1) {
-    //     printf("\nERRO: Digite apenas números!\n");
-    //     return;
-    // };
+    // NOTE: precisa do size_t ou pode ser int?
+    // size_t é um tipo para tamanhos de objetos, retornado pelo strlen
+    size_t len = strlen(nome);
+    // Tirando o '\n' do fgets
+    if (len > 0 && nome[len-1] == '\n') {
+        nome[strlen(nome) - 1] = '\0';
+    } else {
+        // Caso n tenha '\n' é pq input excedeu o tamanho de nome
+        limpar_buffer();
+    }
 
     printf("Digite o preço do produto: \n");
     if (scanf("%f", &preco) != 1) {
         printf("\nERRO: Digite apenas números!\n");
-        return; // FIXME: dá erro após retornar
-    };
+        limpar_buffer(); // HACK: se não limpar aqui, continua no scanf
+        return;
+    }
+    limpar_buffer(); // limpar após sucesso
 
     printf("Digite a quantidade do produto: \n");
-    scanf("%d", &quantidade);
+    if (scanf("%d", &quantidade) != 1) {
+        printf("\nERRO: Digite apenas números!\n");
+        limpar_buffer(); // HACK: se não limpar aqui, continua no scanf
+        return;
+    }
+    limpar_buffer(); // limpar após sucesso
 
     if (*contador < MAX_PRODUTOS) {
         produtos[*contador] = cria_produto(nome, codigo, preco, quantidade);
@@ -103,13 +123,13 @@ void imprimir_produtos(Produto produtos[], int *contador){
         printf("ERRO: Nenhum produto cadastrado ainda.\n");
         return;
     }
-    
+
     for (int i = 0; i < *contador; i++) {
         printf("%d - %s | R$%.2f | Qtd: %d\n",
-               produtos[i].codigo,
-               produtos[i].nome,
-               produtos[i].preco,
-               produtos[i].quantidade);
+                produtos[i].codigo,
+                produtos[i].nome,
+                produtos[i].preco,
+                produtos[i].quantidade);
     }
 }
 
@@ -125,31 +145,27 @@ void buscar_por_codigo(Produto produtos[], int *contador){
         if(codigo_produto == produtos[i].codigo){
             printf("\n=== Produto Encontrado ===\n");
             printf("%d - %s | R$%.2f | Qtd: %d\n",
-               produtos[i].codigo,
-               produtos[i].nome,
-               produtos[i].preco,
-               produtos[i].quantidade);
+                    produtos[i].codigo,
+                    produtos[i].nome,
+                    produtos[i].preco,
+                    produtos[i].quantidade);
             encontrado = 1;
             break; 
         }
     }
-    
+ 
     if (!encontrado) { // Avisa se não encontrou
         printf("ERRO: Produto com código %d não encontrado!\n", codigo_produto);
     }
 }
 
-void ordenar_preco(Produto produtos[]) {
-
-}
-
 void printa_menu(int opcao) {
     char menu_inicial[] = "\n===== MENU =====\n" \
-			"1 - Criar produto\n" \
-			"2 - Listar produtos\n" \
-			"3 - Buscar produto por código\n" \
-			"4 - Ordenar produtos por preço\n\n" \
-			"0 - Sair\n";
+                        "1 - Criar produto\n" \
+                        "2 - Listar produtos\n" \
+                        "3 - Buscar produto por código\n" \
+                        "4 - Ordenar produtos por preço\n\n" \
+                        "0 - Sair\n";
 
     switch (opcao) {
         case 0:
@@ -168,6 +184,7 @@ int main(){
 
     while (1) {
         printa_menu(0);
+
         printf("\nEscolha uma opção: ");
         scanf("%d", &opcao);
         getchar(); // limpar buffer
@@ -189,6 +206,6 @@ int main(){
                 break;
         }
     }
-    
+ 
     return 0; 
 }
