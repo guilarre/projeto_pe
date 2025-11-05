@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#define MAX_PRODUTOS 100
+#include <stdlib.h>
+#define MAX_PRODUTOS 50
 
 // Struct pra armazenar produtos na memória
 struct produto
@@ -32,19 +33,22 @@ void ler_produtos(Produto produtos[], int *contador) {
   char *delim = " ";
 
   while (fgets(buf, 100, fp)) {
-    char *codigo = strtok(buf, delim); // Delimita por espaço
+    char *codigo_str = strtok(buf, delim); // Delimita por espaço
     char *nome = strtok(NULL, delim);
-    char *preco = strtok(NULL, delim);
-    char *quantidade = strtok(NULL, delim);
+    char *preco_str = strtok(NULL, delim);
+    char *quantidade_str = strtok(NULL, delim);
 
-    // Cast pros tipos corretos
-    *codigo = (int)*codigo;
-    *preco = (float)*preco;
-    *quantidade = (int)*quantidade;
+    int codigo, quantidade;
+    float preco;
+
+    // Convertendo pros tipos correto
+    codigo = atoi(codigo_str);
+    preco = (float)atof(preco_str); // atof() retorna um double
+    quantidade = atoi(quantidade_str);
 
     // Lógica pra salvar no struct produto
     if (*contador < MAX_PRODUTOS) {
-        produtos[*contador] = cria_produto(nome, *codigo, *preco, *quantidade);
+        produtos[*contador] = cria_produto(nome, codigo, preco, quantidade);
         *contador += 1;
     } else {
         printf("ERRO: Limite máximo de produtos atingido!\n");
@@ -55,21 +59,28 @@ void ler_produtos(Produto produtos[], int *contador) {
 }
 
 // Função input_criar_produto
-void menu_criar_produto(Produto produtos[], int *contador){
+void menu_criar_produto(Produto produtos[], int *contador, int *contador_codigo){
     char nome[50];
-    int codigo;
+    int codigo = *contador_codigo;
     float preco;
     int quantidade;
 
+    // TODO: validação da string digitada
     printf("Digite o nome do produto: \n");
     fgets(nome, sizeof(nome), stdin);
-    nome[strlen(nome) - 1] = '\0';         
+    nome[strlen(nome) - 1] = '\0';
 
-    printf("Digite o codigo do produto: \n");
-    scanf("%d", &codigo);
+    // printf("Digite o codigo do produto: \n");
+    // if (scanf("%d", &codigo) != 1) {
+    //     printf("\nERRO: Digite apenas números!\n");
+    //     return;
+    // };
 
     printf("Digite o preço do produto: \n");
-    scanf("%f", &preco);
+    if (scanf("%f", &preco) != 1) {
+        printf("\nERRO: Digite apenas números!\n");
+        return; // FIXME: dá erro após retornar
+    };
 
     printf("Digite a quantidade do produto: \n");
     scanf("%d", &quantidade);
@@ -77,6 +88,7 @@ void menu_criar_produto(Produto produtos[], int *contador){
     if (*contador < MAX_PRODUTOS) {
         produtos[*contador] = cria_produto(nome, codigo, preco, quantidade);
         *contador += 1;
+        *contador_codigo += 1;
         printf("\nProduto criado com sucesso!\n");
     } else {
         printf("ERRO: Limite máximo de produtos atingido!\n");
@@ -105,7 +117,7 @@ void buscar_por_codigo(Produto produtos[], int *contador){
     int codigo_produto;
     int encontrado = 0; 
 
-    printf("Qual código do produto? ");
+    printf("Qual código do produto para buscar? ");
     scanf("%d", &codigo_produto);
     getchar();
 
@@ -127,45 +139,54 @@ void buscar_por_codigo(Produto produtos[], int *contador){
     }
 }
 
+void ordenar_preco(Produto produtos[]) {
+
+}
+
 void printa_menu(int opcao) {
     char menu_inicial[] = "\n===== MENU =====\n" \
 			"1 - Criar produto\n" \
 			"2 - Listar produtos\n" \
 			"3 - Buscar produto por código\n" \
 			"4 - Ordenar produtos por preço\n\n" \
-			"0 - Sair\n" \
+			"0 - Sair\n";
+
     switch (opcao) {
         case 0:
             printf("%s", menu_inicial);
+            break;
     }
 }
 
 int main(){
     Produto produtos[MAX_PRODUTOS];
     int contador = 0;
+    int contador_codigo = 121; // Incrementa a partir de 121 (seguindo contagem em produtos.txt)
     int opcao;
-    int *ponteiro_contador = &contador;
 
-    ler_produtos(produtos, ponteiro_contador);
+    ler_produtos(produtos, &contador);
 
     while (1) {
         printa_menu(0);
-        printf("Escolha uma opção: ");
+        printf("\nEscolha uma opção: ");
         scanf("%d", &opcao);
         getchar(); // limpar buffer
-
-        if (opcao == 1) {
-            menu_criar_produto(produtos, ponteiro_contador);
-        } 
-
-        else if (opcao == 2) {
-            imprimir_produtos(produtos, ponteiro_contador);
-        } 
-        else if (opcao == 3) {
-            buscar_por_codigo(produtos, ponteiro_contador);
-        } 
-        else {
-            printf("Opção inválida!\n");
+        switch (opcao) {
+            case 1:
+                menu_criar_produto(produtos, &contador, &contador_codigo);
+                break;
+            case 2:
+                imprimir_produtos(produtos, &contador);
+                break;
+            case 3:
+                buscar_por_codigo(produtos, &contador);
+                break;
+            case 0:
+                printf("\nAté logo!\n");
+                exit(0);
+            default:
+                printf("Opção inválida!\n");
+                break;
         }
     }
     
