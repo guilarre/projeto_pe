@@ -98,15 +98,15 @@ void buscar_por_codigo(Produto produtos[], int *contador){
     }
 }
 
-void ordenar_por_preco(Produto produtos[], int contador) {
+void ordenar_por_preco(Produto produtos[], int *contador) {
     if (contador == 0) {
         printf("Nenhum produto cadastrado ainda.\n");
         return;
     }
     
     // Bubble Sort - ordena do menor para o maior preço
-    for (int i = 0; i < contador - 1; i++) {
-        for (int j = 0; j < contador - i - 1; j++) {
+    for (int i = 0; i < *contador - 1; i++) {
+        for (int j = 0; j < *contador - i - 1; j++) {
             if (produtos[j].preco > produtos[j + 1].preco) {
                 // Troca os produtos de posição
                 Produto temp = produtos[j];
@@ -118,7 +118,7 @@ void ordenar_por_preco(Produto produtos[], int contador) {
     
     // Imprime os produtos ordenados
     printf("\n=== Produtos Ordenados por Preço ===\n");
-    for (int i = 0; i < contador; i++) {
+    for (int i = 0; i < *contador; i++) {
         printf("%d - %s | R$%.2f | Qtd: %d\n",
                produtos[i].codigo,
                produtos[i].nome,
@@ -144,6 +144,7 @@ int main(){
         printf("1 - Criar produto\n");
         printf("2 - Listar produtos\n");
         printf("3 - Buscar produto por código\n");
+        printf("4 - Ordenar por preço");
         printf("Escolha uma opção: ");
         scanf("%d", &opcao);
         getchar(); // limpar buffer
@@ -158,6 +159,9 @@ int main(){
         else if (opcao == 3) {
             buscar_por_codigo(produtos, ponteiro_contador);
         } 
+        else if(opcao == 4) {
+            ordenar_por_preco(produtos, ponteiro_contador);
+        }
         else {
             printf("Opção inválida!\n");
         }
