@@ -54,8 +54,8 @@ Os grupos deverão rodar o programa em sala e explicar o funcionamento. Todos os
 - Funções: adicionar produto novo em memória, buscar por código, imprimir produtos e ordenar por preço
 - Criar main
 - Criar README
-
 - Revisões, testes, correções de bug, checar se tá funcionando igual em windows e linux)
+- Validação de inputs do user
 
 ## Checklist:
 [ ] - leitura de arquivos texto (SEM ESCRITA)

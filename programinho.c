@@ -105,7 +105,7 @@ void buscar_por_codigo(Produto produtos[], int *contador){
     int codigo_produto;
     int encontrado = 0; 
 
-    printf("Qual codigo do produto? ");
+    printf("Qual código do produto? ");
     scanf("%d", &codigo_produto);
     getchar();
 
@@ -127,6 +127,19 @@ void buscar_por_codigo(Produto produtos[], int *contador){
     }
 }
 
+void printa_menu(int opcao) {
+    char menu_inicial[] = "\n===== MENU =====\n" \
+			"1 - Criar produto\n" \
+			"2 - Listar produtos\n" \
+			"3 - Buscar produto por código\n" \
+			"4 - Ordenar produtos por preço\n\n" \
+			"0 - Sair\n" \
+    switch (opcao) {
+        case 0:
+            printf("%s", menu_inicial);
+    }
+}
+
 int main(){
     Produto produtos[MAX_PRODUTOS];
     int contador = 0;
@@ -136,10 +149,7 @@ int main(){
     ler_produtos(produtos, ponteiro_contador);
 
     while (1) {
-        printf("\n===== MENU =====\n");
-        printf("1 - Criar produto\n");
-        printf("2 - Listar produtos\n");
-        printf("3 - Buscar produto por código\n");
+        printa_menu(0);
         printf("Escolha uma opção: ");
         scanf("%d", &opcao);
         getchar(); // limpar buffer
