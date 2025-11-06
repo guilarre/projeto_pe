@@ -72,5 +72,9 @@ Os grupos deverão rodar o programa em sala e explicar o funcionamento. Todos os
 [ ] - Funcionamento
 [ ] - Explicação e domínio do conteúdo
 
+## DÚVIDAS
+- Pode autoincrementar código?
 
+## Pontos de evolução
 - Usar o LOC no 'Produto produtos[MAX_PRODUTOS];' para melhorar a locaçao de memoria
+- Imprimir produto novo após registro
