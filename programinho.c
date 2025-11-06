@@ -229,6 +229,9 @@ int main(){
             case 3:
                 buscar_por_codigo(produtos, &contador);
                 break;
+            case 4:
+                ordenar_por_preco(produtos, &contador);
+                break;
             case 0:
                 printf("\nAté logo!\n");
                 exit(0);
