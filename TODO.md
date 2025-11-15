@@ -40,13 +40,13 @@ Os grupos deverão rodar o programa em sala e explicar o funcionamento. Todos os
 ## Divisões:
 
 ### Guilherme:
-- 
+- introdução de como funciona em geral, apresentar readme, clonar repositório e rodar, explicação do struct, ler_produtos()
 
 ### Thiago:
-- 
+- printa_menu(), menu_criar_produto(), cria_produto(), bubble_sort(), case 1 e 4
 
-### ???:
-- 
+### Beltrão:
+- case 2 e 3: limpar_buffer() (durante a fala de Thiago), imprimir_produtos(), buscar_por_codigo()
 
 ## Atividades:
 - Memória e estruturas: struct para produtos, funções para leitura do arquivo e salvar cada dado lido em memória

@@ -182,7 +182,7 @@ void ordenar_por_preco(Produto produtos[], int *contador) {
         printf("Nenhum produto cadastrado ainda.\n");
         return;
     }
-    
+ 
     // Bubble Sort - ordena do menor para o maior preço
     for (int i = 0; i < *contador - 1; i++) {
         for (int j = 0; j < *contador - i - 1; j++) {
@@ -194,7 +194,7 @@ void ordenar_por_preco(Produto produtos[], int *contador) {
             }
         }
     }
-    
+
     // Imprime os produtos ordenados
     printf("\n=== Produtos Ordenados por Preço ===\n");
     for (int i = 0; i < *contador; i++) {
@@ -205,9 +205,6 @@ void ordenar_por_preco(Produto produtos[], int *contador) {
                produtos[i].quantidade);
     }
 }
-
-
-
 
 void printa_menu(int opcao) {
     char menu_inicial[] = "\n===== MENU =====\n" \
