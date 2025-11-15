@@ -58,12 +58,12 @@ Os grupos deverão rodar o programa em sala e explicar o funcionamento. Todos os
 - Validação de inputs do user
 
 ## Checklist:
-[ ] - leitura de arquivos texto (SEM ESCRITA)
-[ ] - funções separadas para leitura, busca, ordenação e impressão.
-[ ] - vetores
-[ ] - structs
-[ ] - strings
-[ ] - Cada produto deve possuir código, nome, preço e quantidade
+[x] - leitura de arquivos texto (SEM ESCRITA)
+[x] - funções separadas para leitura, busca, ordenação e impressão.
+[x] - vetores
+[x] - structs
+[x] - strings
+[x] - Cada produto deve possuir código, nome, preço e quantidade
 [ ] - Código hospedado no GitHub com README explicando como compilar e executar.
 [ ] - no dia da apresentação TEM QUE clonar, rodar e funcionar
 [ ] - Todos os membros devem demonstrar domínio do código.
@@ -78,3 +78,4 @@ Os grupos deverão rodar o programa em sala e explicar o funcionamento. Todos os
 ## Pontos de evolução
 - Usar o LOC no 'Produto produtos[MAX_PRODUTOS];' para melhorar a locaçao de memoria
 - Imprimir produto novo após registro
+- Usar o fscanf/fprintf pra ler_produtos()
