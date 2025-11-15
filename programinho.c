@@ -97,11 +97,8 @@ void menu_criar_produto(Produto produtos[], int *contador, int *contador_codigo)
         printf("\nERRO: Nome inválido!.\n");
     }
 
-    // NOTE: precisa do size_t ou pode ser int?
-    // size_t é um tipo para tamanhos de objetos, retornado pelo strlen
-    size_t len = strlen(nome);
     // Tirando o '\n' do fgets
-    if (len > 0 && nome[len-1] == '\n') {
+    if (strlen(nome) > 0 && nome[strlen(nome)-1] == '\n') {
         nome[strlen(nome) - 1] = '\0';
     } else {
         // Caso n tenha '\n' é pq input excedeu o tamanho de nome
