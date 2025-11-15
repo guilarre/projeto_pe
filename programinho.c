@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+// Criando uma constante pro máx de produtos
 #define MAX_PRODUTOS 50
 
 // Struct pra armazenar produtos na memória
@@ -22,44 +23,62 @@ Produto cria_produto(char nome[50], int codigo, float preco, int quantidade) {
     produto.codigo = codigo;
     produto.preco = preco;
     produto.quantidade = quantidade;
+
     return produto;
 }
 
+// Contador usado para acessar elementos do vetor produtos[]
 void ler_produtos(Produto produtos[], int *contador) {
-  FILE *fp;
-  fp = fopen("produtos.txt", "r");
+    // Ponteiro pro arquivo
+    FILE *fp;
+    fp = fopen("produtos.txt", "r");
 
-  char buf[100];
-  char *delim = " ";
+    // Buffer de leitura
+    char buf[100];
+    char *delim = " "; // Delimitador = espaço
 
-  while (fgets(buf, 100, fp)) {
-    char *codigo_str = strtok(buf, delim); // Delimita por espaço
-    char *nome = strtok(NULL, delim);
-    char *preco_str = strtok(NULL, delim);
-    char *quantidade_str = strtok(NULL, delim);
+    // fgets() lê linha por linha
+    while (fgets(buf, 100, fp)) {
+        // Colocando cada dado lido em uma variável
+        // strtok() para separar a string
+        char *codigo_str = strtok(buf, delim); 
+        // TEM que mudar pra NULL após primeiro split
+        // por padrão quando usa strtok()
+        char *nome = strtok(NULL, delim);
+        char *preco_str = strtok(NULL, delim);
+        char *quantidade_str = strtok(NULL, delim);
 
-    int codigo, quantidade;
-    float preco;
+        int codigo, quantidade;
+        float preco;
 
-    // Convertendo pros tipos correto
-    codigo = atoi(codigo_str);
-    preco = (float)atof(preco_str); // atof() retorna um double
-    quantidade = atoi(quantidade_str);
+        // Convertendo pros tipos correto
+        // atoi() = ASCII to int
+        codigo = atoi(codigo_str);
+        // atof() (ASCII to float) retorna um double
+        // então tem que fazer cast para float no nosso caso
+        preco = (float)atof(preco_str); 
+        quantidade = atoi(quantidade_str);
 
-    // Lógica pra salvar no struct produto
-    if (*contador < MAX_PRODUTOS) {
-        produtos[*contador] = cria_produto(nome, codigo, preco, quantidade);
-        *contador += 1;
-    } else {
-        printf("ERRO: Limite máximo de produtos atingido!\n");
+        // Lógica pra salvar no struct produto
+        // Verificamos a qtd máxima de produtos permitido
+        // FIXME: Pode ser melhorado com alocação dinâmica,
+        // não precisando de um máximo
+        if (*contador < MAX_PRODUTOS) {
+            produtos[*contador] = cria_produto(nome, codigo, preco, quantidade);
+            *contador += 1;
+        } else {
+            printf("ERRO: Limite máximo de produtos atingido!\n");
+        }
     }
-  }
 
-  fclose(fp);
+    // Fecha o stream do arquivo e libera espaço na memória
+    fclose(fp);
 }
 
 // Vamos precisar do limpar_buffer() pra quando tiver
-// fgets/scanf um junto do outro
+// fgets/scanf um junto do outro, por conta do comportamento
+// do fgets de adicionar um \n no final e problemas do scanf
+// em não saber lidar bem com isso
 void limpar_buffer() {
     int c;
     // Consome os caracteres até o fim da linha/arquivo
@@ -67,7 +86,7 @@ void limpar_buffer() {
 }
 
 // Função input_criar_produto
-void menu_criar_produto(Produto produtos[], int *contador, int *contador_codigo){
+void menu_criar_produto(Produto produtos[], int *contador, int *contador_codigo) {
     char nome[50];
     int codigo = *contador_codigo;
     float preco;
@@ -163,7 +182,7 @@ void ordenar_por_preco(Produto produtos[], int *contador) {
         printf("Nenhum produto cadastrado ainda.\n");
         return;
     }
-    
+ 
     // Bubble Sort - ordena do menor para o maior preço
     for (int i = 0; i < *contador - 1; i++) {
         for (int j = 0; j < *contador - i - 1; j++) {
@@ -175,7 +194,7 @@ void ordenar_por_preco(Produto produtos[], int *contador) {
             }
         }
     }
-    
+
     // Imprime os produtos ordenados
     printf("\n=== Produtos Ordenados por Preço ===\n");
     for (int i = 0; i < *contador; i++) {
@@ -186,9 +205,6 @@ void ordenar_por_preco(Produto produtos[], int *contador) {
                produtos[i].quantidade);
     }
 }
-
-
-
 
 void printa_menu(int opcao) {
     char menu_inicial[] = "\n===== MENU =====\n" \
