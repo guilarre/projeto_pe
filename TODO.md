@@ -40,13 +40,10 @@ Os grupos deverão rodar o programa em sala e explicar o funcionamento. Todos os
 ## Divisões:
 
 ### Guilherme:
-- introdução de como funciona em geral, apresentar readme, clonar repositório e rodar, explicação do struct, ler_produtos()
+- introdução de como funciona em geral, apresentar readme, clonar repositório e rodar, explicação do struct, ler_produtos(), limpar_buffer() (durante a fala de Thiago sobre o menu_criar_produto())
 
 ### Thiago:
-- printa_menu(), menu_criar_produto(), cria_produto(), bubble_sort(), case 1 e 4
-
-### Beltrão:
-- case 2 e 3: limpar_buffer() (durante a fala de Thiago), imprimir_produtos(), buscar_por_codigo()
+- printa_menu(), menu_criar_produto(), cria_produto(), ordenar_por_preco(), imprimir_produtos(), buscar_por_codigo()
 
 ## Atividades:
 - Memória e estruturas: struct para produtos, funções para leitura do arquivo e salvar cada dado lido em memória
@@ -64,18 +61,16 @@ Os grupos deverão rodar o programa em sala e explicar o funcionamento. Todos os
 [x] - structs
 [x] - strings
 [x] - Cada produto deve possuir código, nome, preço e quantidade
-[ ] - Código hospedado no GitHub com README explicando como compilar e executar.
-[ ] - no dia da apresentação TEM QUE clonar, rodar e funcionar
-[ ] - Todos os membros devem demonstrar domínio do código.
+[x] - Código hospedado no GitHub com README explicando como compilar e executar.
+[x] - no dia da apresentação TEM QUE clonar, rodar e funcionar
+[x] - Todos os membros devem demonstrar domínio do código.
 [ ] - ensaio
 [ ] - Organização e clareza do código
 [ ] - Funcionamento
-[ ] - Explicação e domínio do conteúdo
+[x] - Explicação e domínio do conteúdo
 
 ## DÚVIDAS
-- Pode autoincrementar código?
 
 ## Pontos de evolução
-- Usar o LOC no 'Produto produtos[MAX_PRODUTOS];' para melhorar a locaçao de memoria
 - Imprimir produto novo após registro
 - Usar o fscanf/fprintf pra ler_produtos()
