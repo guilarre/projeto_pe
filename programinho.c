@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 // Criando uma constante pro máx de produtos
-#define MAX_PRODUTOS 50
+// #define MAX_PRODUTOS 50
 
 // Struct pra armazenar produtos na memória
 struct produto
@@ -28,10 +28,14 @@ Produto cria_produto(char nome[50], int codigo, float preco, int quantidade) {
 }
 
 // Contador usado para acessar elementos do vetor produtos[]
-void ler_produtos(Produto produtos[], int *contador) {
+void ler_produtos(Produto **produtos, int *contador) {
     // Ponteiro pro arquivo
     FILE *fp;
     fp = fopen("produtos.txt", "r");
+    // caso arquivo não exista
+    if (!fp) {
+        printf("ERRO: arquivo produtos.txt não foi encontrado!\n");
+    };
 
     // Buffer de leitura
     char buf[100];
@@ -63,13 +67,18 @@ void ler_produtos(Produto produtos[], int *contador) {
         // Verificamos a qtd máxima de produtos permitido
         // FIXME: Pode ser melhorado com alocação dinâmica,
         // não precisando de um máximo
-        if (*contador < MAX_PRODUTOS) {
-            produtos[*contador] = cria_produto(nome, codigo, preco, quantidade);
+
+        *produtos = realloc(*produtos, (*contador+1) * sizeof(Produto));
+        if (*produtos != NULL) {
+            (*produtos)[*contador] = cria_produto(nome, codigo, preco, quantidade);
             *contador += 1;
         } else {
             printf("ERRO: Limite máximo de produtos atingido!\n");
+            return; // Retorno após erro
         }
-    }
+     }
+
+    
 
     // Fecha o stream do arquivo e libera espaço na memória
     fclose(fp);
@@ -86,7 +95,7 @@ void limpar_buffer() {
 }
 
 // Função input_criar_produto
-void menu_criar_produto(Produto produtos[], int *contador, int *contador_codigo) {
+void menu_criar_produto(Produto **produtos, int *contador, int *contador_codigo) {
     char nome[50];
     int codigo = *contador_codigo;
     float preco;
@@ -121,18 +130,19 @@ void menu_criar_produto(Produto produtos[], int *contador, int *contador_codigo)
     }
     limpar_buffer(); // limpar após sucesso
 
-    if (*contador < MAX_PRODUTOS) {
-        produtos[*contador] = cria_produto(nome, codigo, preco, quantidade);
+    if (*produtos != NULL) {
+        (*produtos)[*contador] = cria_produto(nome, codigo, preco, quantidade);
         *contador += 1;
         *contador_codigo += 1;
         printf("\nProduto criado com sucesso!\n");
     } else {
         printf("ERRO: Limite máximo de produtos atingido!\n");
+        return;
     }
 }
 
 
-void imprimir_produtos(Produto produtos[], int *contador){
+void imprimir_produtos(Produto **produtos, int *contador){
     printf("\n=== Lista de Produtos ===\n");
     
     if (*contador == 0) {
@@ -142,14 +152,14 @@ void imprimir_produtos(Produto produtos[], int *contador){
 
     for (int i = 0; i < *contador; i++) {
         printf("%d - %s | R$%.2f | Qtd: %d\n",
-                produtos[i].codigo,
-                produtos[i].nome,
-                produtos[i].preco,
-                produtos[i].quantidade);
+                (*produtos)[i].codigo,
+                (*produtos)[i].nome,
+                (*produtos)[i].preco,
+                (*produtos)[i].quantidade);
     }
 }
 
-void buscar_por_codigo(Produto produtos[], int *contador){
+void buscar_por_codigo(Produto **produtos, int *contador){
     int codigo_produto;
     int encontrado = 0; 
 
@@ -158,13 +168,13 @@ void buscar_por_codigo(Produto produtos[], int *contador){
     getchar();
 
     for (int i = 0; i < *contador; i++) {
-        if(codigo_produto == produtos[i].codigo){
+        if(codigo_produto == (*produtos)[i].codigo){
             printf("\n=== Produto Encontrado ===\n");
             printf("%d - %s | R$%.2f | Qtd: %d\n",
-                    produtos[i].codigo,
-                    produtos[i].nome,
-                    produtos[i].preco,
-                    produtos[i].quantidade);
+                    (*produtos)[i].codigo,
+                    (*produtos)[i].nome,
+                    (*produtos)[i].preco,
+                    (*produtos)[i].quantidade);
             encontrado = 1;
             break; 
         }
@@ -174,7 +184,7 @@ void buscar_por_codigo(Produto produtos[], int *contador){
         printf("ERRO: Produto com código %d não encontrado!\n", codigo_produto);
     }
 }
-void ordenar_por_preco(Produto produtos[], int *contador) {
+void ordenar_por_preco(Produto **produtos, int *contador) {
     if (contador == 0) {
         printf("Nenhum produto cadastrado ainda.\n");
         return;
@@ -183,11 +193,11 @@ void ordenar_por_preco(Produto produtos[], int *contador) {
     // Bubble Sort - ordena do menor para o maior preço
     for (int i = 0; i < *contador - 1; i++) {
         for (int j = 0; j < *contador - i - 1; j++) {
-            if (produtos[j].preco > produtos[j + 1].preco) {
+            if ((*produtos)[j].preco > (*produtos)[j + 1].preco) {
                 // Troca os produtos de posição
-                Produto temp = produtos[j];
-                produtos[j] = produtos[j + 1];
-                produtos[j + 1] = temp;
+                Produto temp = (*produtos)[j];
+                (*produtos)[j] = (*produtos)[j + 1];
+                (*produtos)[j + 1] = temp;
             }
         }
     }
@@ -196,10 +206,10 @@ void ordenar_por_preco(Produto produtos[], int *contador) {
     printf("\n=== Produtos Ordenados por Preço ===\n");
     for (int i = 0; i < *contador; i++) {
         printf("%d - %s | R$%.2f | Qtd: %d\n",
-               produtos[i].codigo,
-               produtos[i].nome,
-               produtos[i].preco,
-               produtos[i].quantidade);
+               (*produtos)[i].codigo,
+               (*produtos)[i].nome,
+               (*produtos)[i].preco,
+               (*produtos)[i].quantidade);
     }
 }
 
@@ -218,13 +228,13 @@ void printa_menu(int opcao) {
     }
 }
 
-int main(){
-    Produto produtos[MAX_PRODUTOS];
+int main() {
+    Produto *produtos = NULL;
     int contador = 0;
     int contador_codigo = 121; // Incrementa a partir de 121 (seguindo contagem em produtos.txt)
     int opcao;
 
-    ler_produtos(produtos, &contador);
+    ler_produtos(&produtos, &contador);
 
     while (1) {
         printa_menu(0);
@@ -234,16 +244,16 @@ int main(){
         getchar(); // limpar buffer
         switch (opcao) {
             case 1:
-                menu_criar_produto(produtos, &contador, &contador_codigo);
+                menu_criar_produto(&produtos, &contador, &contador_codigo);
                 break;
             case 2:
-                imprimir_produtos(produtos, &contador);
+                imprimir_produtos(&produtos, &contador);
                 break;
             case 3:
-                buscar_por_codigo(produtos, &contador);
+                buscar_por_codigo(&produtos, &contador);
                 break;
             case 4:
-                ordenar_por_preco(produtos, &contador);
+                ordenar_por_preco(&produtos, &contador);
                 break;
             case 0:
                 printf("\nAté logo!\n");
@@ -254,5 +264,6 @@ int main(){
         }
     }
  
+    free(produtos);
     return 0; 
 }
