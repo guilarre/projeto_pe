@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include <string.h> // pro strcpy()
+#include <stdlib.h> // pro atoi(), atof(), exit(), malloc(), realloc()
 // Criando uma constante pro máx de produtos
 // #define MAX_PRODUTOS 50
 
@@ -13,13 +13,14 @@ struct produto
     int quantidade;
 };
 
+// Apelido para "struct produto" = "Produto"
 typedef struct produto Produto;
 
-// Função criar_produto
+// Função cria_produto() para facilitar adição de um produto ao struct
 Produto cria_produto(char nome[50], int codigo, float preco, int quantidade) {
     Produto produto;
 
-    strcpy(produto.nome, nome); 
+    strcpy(produto.nome, nome); // Deve usar strcpy() aqui
     produto.codigo = codigo;
     produto.preco = preco;
     produto.quantidade = quantidade;
@@ -27,7 +28,8 @@ Produto cria_produto(char nome[50], int codigo, float preco, int quantidade) {
     return produto;
 }
 
-// Contador usado para acessar elementos do vetor produtos[]
+// Contador usado para acessar elementos do vetor produtos
+// Precisa passar como ** (ponteiro de ponteiro) para modificar tamanho com realloc()
 void ler_produtos(Produto **produtos, int *contador) {
     // Ponteiro pro arquivo
     FILE *fp;
@@ -35,18 +37,19 @@ void ler_produtos(Produto **produtos, int *contador) {
     // caso arquivo não exista
     if (!fp) {
         printf("ERRO: arquivo produtos.txt não foi encontrado!\n");
+        exit(1);
     };
 
-    // Buffer de leitura
+    // Buffer de leitura (de linha em linha)
     char buf[100];
     char *delim = " "; // Delimitador = espaço
 
-    // fgets() lê linha por linha
+    // fgets() passa para buf cada linha
     while (fgets(buf, 100, fp)) {
         // Colocando cada dado lido em uma variável
         // strtok() para separar a string
         char *codigo_str = strtok(buf, delim); 
-        // TEM que mudar pra NULL após primeiro split
+        // NOTE: TEM que mudar pra NULL após primeiro split
         // por padrão quando usa strtok()
         char *nome = strtok(NULL, delim);
         char *preco_str = strtok(NULL, delim);
@@ -63,20 +66,17 @@ void ler_produtos(Produto **produtos, int *contador) {
         preco = (float)atof(preco_str); 
         quantidade = atoi(quantidade_str);
 
-        // Lógica pra salvar no struct produto
-        // Verificamos a qtd máxima de produtos permitido
-        // FIXME: Pode ser melhorado com alocação dinâmica,
-        // não precisando de um máximo
-
+        // Lógica pra salvar no vetor produtos (dinamicamente alocado)
         *produtos = realloc(*produtos, (*contador+1) * sizeof(Produto));
         if (*produtos != NULL) {
             (*produtos)[*contador] = cria_produto(nome, codigo, preco, quantidade);
+            // Se sucesso na operação, incrementar
             *contador += 1;
         } else {
             printf("ERRO: Limite máximo de produtos atingido!\n");
             return; // Retorno após erro
         }
-     }
+    }
 
     
 
